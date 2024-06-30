@@ -8,19 +8,18 @@ struct BookInfo:
     author as field;
     isbn as field;
 
-//Запис про книгу
+// Запис про книгу.
 record Book:
     id as field.private;
     info as BookInfo.private;
     available as bool.private;
 
-// Запис про користувача
-
+// Запис про користувача.
 record User:
     id as address.private;
     name as field.private;
 
-// Запис про абонемент
+// Запис про абонемент.
 record Borrow:
     user_id as address.private;
     book_id as field.private;
@@ -35,18 +34,18 @@ mapping book_availability:
     key as field.public;
     value as bool.public;
 
-//Мапінг для зберігання користувачів
+// Мапінг для зберігання користувачів.
 mapping users:
     key as address.public;
     value as field.public;
 
-//Мапінг для зберігання абонементів.
+// Мапінг для зберігання абонементів.
 mapping borrows:
     key as field.public;
     value as Borrow.public;
 
 
-//Функція для додавання нової книги.
+// Функція для додавання нової книги.
 function add_book:
     input r0 as BookInfo.public;
     hash.bhp256 r0.isbn into r1 as field;
@@ -54,15 +53,13 @@ function add_book:
     async add_book r1 into r2;
     output r2 as library_kx0d8ki.aleo/add_book.future;
 
-// Фіналізація для додавання нової книги
-
+// Фіналізація для додавання нової книги.
 finalize add_book:
     input r0 as field.public;
     set true into book_availability[r0];
 
 
 // Функція для реєстрації нового користувача.
-
 function register_user:
     input r0 as address.public;
     input r1 as field.public;
@@ -89,14 +86,13 @@ function borrow_book:
     output r3 as Borrow.record;
     output r4 as library_kx0d8ki.aleo/borrow_book.future;
 
-//Фіналізація для взяття книги на абонемент
-
+// Фіналізація для взяття книги на абонемент.
 finalize borrow_book:
     input r0 as field.public;
     set false into book_availability[r0];
 
 
-//Функція для повернення книги
+// Функція для повернення книги.
 function return_book:
     input r0 as address.public;
     input r1 as field.public;
@@ -109,7 +105,6 @@ function return_book:
 finalize return_book:
     input r0 as field.public;
     set true into book_availability[r0];
-    
 }
 
 // Функція для перевірки статусу книги.
@@ -118,7 +113,6 @@ function check_availability:
     get.or_use book_availability[r0] false into r1;
     output r1 as bool.public;
 }
-
 
 ======================
 
